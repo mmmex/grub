@@ -37,9 +37,11 @@ PV необходимо инициализировать с параметром
 
 ![Screenshot2](https://raw.githubusercontent.com/mmmex/grub/master/Screenshot2.png)
 
-* В конце строки начинающейся с `linux16` добавляем `rd.break` и нажимаем `сtrl-x` для загрузки в систему
+* Попадаем в `emergency mode` 
 
-* Попадаем в `emergency mode`. Наша корневая файловая система смонтирована (опять же в режиме `Read-Only`, но мы не в ней. Далее будет пример как попасть в нее и поменять пароль администратора:
+![ScreenshotEmergencyMode](https://raw.githubusercontent.com/mmmex/grub/master/Screenshot_EmergencyMode.png)
+
+* Корневая файловая система смонтирована в каталог /sysroot и в режиме `Read-Only`. Далее будет пример как попасть в нее и поменять пароль администратора:
 
 ```sh
 mount -o remount,rw /sysroot
