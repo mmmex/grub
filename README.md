@@ -268,7 +268,7 @@ Skipping udev rule: 91-permissions.rules
 
 или
 
-````[root@localhost 01test]# dracut -f``
+```[root@localhost 01test]# dracut -f```
 
 * Можно проверить/посмотреть какие модули загружены в образ:
 
