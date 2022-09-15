@@ -3,11 +3,12 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = 'centos/7'
+  config.vm.define "grub" do |grub|
 
-  config.vm.define "server" do |server|
+    grub.vm.box = 'centos/7'
 
-    server.vm.provider "virtualbox" do |vb|
+    grub.vm.provider "virtualbox" do |vb|
+      vb.gui = true
       vb.memory = "1024"
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     end
