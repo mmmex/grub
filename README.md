@@ -46,7 +46,7 @@ PV необходимо инициализировать с параметром
 
 * Корневая файловая система смонтирована в каталог `/sysroot` и в режиме `Read-Only`. Далее будет пример как попасть в нее и поменять пароль администратора:
 
-```sh
+```bash
 mount -o remount,rw /sysroot
 chroot /sysroot
 passwd root
@@ -167,41 +167,113 @@ Skipping udev rule: 91-permissions.rules
 *** Creating initramfs image file '/boot/initramfs-3.10.0-862.2.3.el7.x86_64.img' done ***
 ```
 
-* После чего можем перезагружаться и если все сделано правильно успешно грузимся с
-новым именем `Volume Group` и проверяем:
+* После чего можем перезагружаться и если все сделано правильно успешно грузимся с новым именем `OtusRoot` и проверяем:
 
-```sh
-[root@otuslinux ~]# vgs
- VG #PV #LV #SN Attr VSize VFree
- OtusRoot 1 2 0 wz--n- <38.97g 0
+```bash
+[root@localhost ~]# vgs
+  VG       #PV #LV #SN Attr   VSize   VFree
+  OtusRoot   1   2   0 wz--n- <38.97g    0
 ```
 
 * При желании можно так же заменить название `Logical Volume`
 
 ## Добавить модуль в `initrd`
 
-Скрипты модулей хранятся в каталоге `/usr/lib/dracut/modules.d/`. Для того чтобы
-добавить свой модуль создаем там папку с именем `01test`:
+Будем использовать `Vagrantfile` из предыдущей инструкции, но для удобства добавим свойство `vb.gui = true` после строки `box.vm.provider :virtualbox do |vb|`. Перечитаем конфигурацию командой `vagrant reload`.
 
-```[root@otuslinux ~]# mkdir /usr/lib/dracut/modules.d/01test```
+Скрипты модулей хранятся в каталоге `/usr/lib/dracut/modules.d/`. Для того чтобы добавить свой модуль создаем там папку с именем `01test`:
+
+```[root@localhost ~]# mkdir /usr/lib/dracut/modules.d/01test```
 
 В нее поместим два скрипта:
 
-1. [module_setup.sh](/module_setup.sh) - который устанавливает модуль и вызывает скрипт `test.sh`
+1. [module-setup.sh](/module-setup.sh) - который устанавливает модуль и вызывает скрипт `test.sh`
 2. [test.sh](/test.sh) - собственно сам вызываемый скрипт, в нём у нас рисуется пингвинчик
+
+Переходим в каталог и выставляем флаг `x`:
+
+```bash
+[root@localhost ~]# cd /usr/lib/dracut/modules.d/01test
+[root@localhost 01test]# chmod a+x *
+[root@localhost 01test]# ls -al
+total 12
+drwxr-xr-x.  2 root root   44 Sep 15 23:03 .
+drwxr-xr-x. 52 root root 4096 Sep 15 22:58 ..
+-rwxr-xr-x.  1 root root  111 Sep 15 23:03 module-setup.sh
+-rwxr-xr-x.  1 root root  316 Sep 15 23:03 test.sh
+```
 
 * Пересобираем образ `initrd`
 
-```root@otuslinux ~]# mkinitrd -f -v /boot/initramfs-$(uname -r).img $(uname -r)```
+```bash
+[root@localhost 01test]# mkinitrd -f -v /boot/initramfs-$(uname -r).img $(uname -r)
+Executing: /sbin/dracut -f -v /boot/initramfs-3.10.0-862.2.3.el7.x86_64.img 3.10.0-862.2.3.el7.x86_64
+dracut module 'busybox' will not be installed, because command 'busybox' could not be found!
+dracut module 'crypt' will not be installed, because command 'cryptsetup' could not be found!
+dracut module 'dmraid' will not be installed, because command 'dmraid' could not be found!
+dracut module 'dmsquash-live-ntfs' will not be installed, because command 'ntfs-3g' could not be found!
+dracut module 'mdraid' will not be installed, because command 'mdadm' could not be found!
+dracut module 'multipath' will not be installed, because command 'multipath' could not be found!
+dracut module 'busybox' will not be installed, because command 'busybox' could not be found!
+dracut module 'crypt' will not be installed, because command 'cryptsetup' could not be found!
+dracut module 'dmraid' will not be installed, because command 'dmraid' could not be found!
+dracut module 'dmsquash-live-ntfs' will not be installed, because command 'ntfs-3g' could not be found!
+dracut module 'mdraid' will not be installed, because command 'mdadm' could not be found!
+dracut module 'multipath' will not be installed, because command 'multipath' could not be found!
+*** Including module: bash ***
+*** Including module: test ***
+*** Including module: nss-softokn ***
+*** Including module: i18n ***
+*** Including module: drm ***
+*** Including module: plymouth ***
+*** Including module: dm ***
+Skipping udev rule: 64-device-mapper.rules
+Skipping udev rule: 60-persistent-storage-dm.rules
+Skipping udev rule: 55-dm.rules
+*** Including module: kernel-modules ***
+Omitting driver floppy
+*** Including module: lvm ***
+Skipping udev rule: 64-device-mapper.rules
+Skipping udev rule: 56-lvm.rules
+Skipping udev rule: 60-persistent-storage-lvm.rules
+*** Including module: qemu ***
+*** Including module: resume ***
+*** Including module: rootfs-block ***
+*** Including module: terminfo ***
+*** Including module: udev-rules ***
+Skipping udev rule: 40-redhat-cpu-hotplug.rules
+Skipping udev rule: 91-permissions.rules
+*** Including module: biosdevname ***
+*** Including module: systemd ***
+*** Including module: usrmount ***
+*** Including module: base ***
+*** Including module: fs-lib ***
+*** Including module: shutdown ***
+*** Including modules done ***
+*** Installing kernel module dependencies and firmware ***
+*** Installing kernel module dependencies and firmware done ***
+*** Resolving executable dependencies ***
+*** Resolving executable dependencies done***
+*** Hardlinking files ***
+*** Hardlinking files done ***
+*** Stripping files ***
+*** Stripping files done ***
+*** Generating early-microcode cpio image contents ***
+*** No early-microcode cpio image needed ***
+*** Store current command line parameters ***
+*** Creating image file ***
+*** Creating image file done ***
+*** Creating initramfs image file '/boot/initramfs-3.10.0-862.2.3.el7.x86_64.img' done ***
+```
 
 или
 
-```[root@otuslinux ~]# dracut -f -v```
+````[root@localhost 01test]# dracut -f``
 
 * Можно проверить/посмотреть какие модули загружены в образ:
 
 ```sh
-[root@otuslinux ~]# lsinitrd -m /boot/initramfs-$(uname -r).img | grep test
+[root@localhost 01test]# lsinitrd -m /boot/initramfs-$(uname -r).img | grep test
 test
 ```
 
@@ -209,7 +281,6 @@ test
 	* Перезагрузиться и руками выключить опции `rghb` и `quiet` и увидеть вывод
 	* Либо отредактировать `grub.cfg` убрав эти опции
 
-* В итоге при загрузке будет пауза на 10 секунд и вы увидите пингвина в выводе
-терминала
+* В итоге при загрузке будет пауза на 10 секунд и вы увидите пингвина в выводе терминала
 
-
+![ScreenshotSracut](https://raw.githubusercontent.com/mmmex/grub/master/Screenshot_Dracut.png)
