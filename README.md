@@ -99,8 +99,7 @@ touch /.autorelabel
 ```
 
 <details><summary>Файл /etc/default/grub</summary>
-<pre>
-```
+```sh
 GRUB_TIMEOUT=1
 GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
 GRUB_DEFAULT=saved
@@ -109,7 +108,6 @@ GRUB_TERMINAL_OUTPUT="console"
 GRUB_CMDLINE_LINUX="no_timer_check console=tty0 console=ttyS0,115200n8 net.ifnames=0 biosdevname=0 elevator=noop crashkernel=auto rd.lvm.lv=OtusRoot/LogVol00 rd.lvm.lv=OtusRoot/LogVol01 rhgb quiet"
 GRUB_DISABLE_RECOVERY="true"
 ```
-</pre>
 </details>
 
 <details><summary>Файл /etc/fstab</summary>
