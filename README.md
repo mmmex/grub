@@ -20,7 +20,7 @@ PV необходимо инициализировать с параметром
 
 ![ScreenshotMenu](https://raw.githubusercontent.com/mmmex/grub/master/Screenshot_MenuGrub.png)
 
-![ScreenshotMenuEdit](https://raw.githubusercontent.com/mmmex/grub/master/Screenshot_MenuEdit.png)
+![ScreenshotMenuEdit](https://raw.githubusercontent.com/mmmex/grub/master/Screenshot_EditMode.png)
 
 Для данного раздела инструкции собрана ВМ `grub` в конфигурации `Vagrantfile` с включенной опцией `gui`. Для испытания нижеперечисленных способов ввести команду: `vagrant up grub`.
 
